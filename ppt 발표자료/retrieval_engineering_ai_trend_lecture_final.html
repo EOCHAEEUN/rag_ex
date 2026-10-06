@@ -1,0 +1,1211 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Retrieval Engineering 발표자료 v2</title><style>
+:root{
+  --bg:#d8e0e8;
+  --paper:#f2f6f9;
+  --ink:#1f2f46;
+  --muted:#65758a;
+  --line:#d6e2ea;
+  --shadow:0 10px 30px rgba(33,59,89,.12);
+  --code:#102035;
+  --code-border:#28486d;
+  --blue:#6588d8;
+  --blue-soft:#edf3ff;
+  --teal:#65bcb4;
+  --teal-soft:#edf9f7;
+  --orange:#e4a15d;
+  --orange-soft:#fff6ec;
+  --violet:#8b8ed6;
+  --violet-soft:#f4f2ff;
+  --rerank:#d491a6;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#e8edf1;font-family:Pretendard,'Noto Sans KR','Apple SD Gothic Neo',sans-serif;color:var(--ink)}
+body{padding:10mm 0}
+.deck{display:flex;flex-direction:column;align-items:center;gap:10mm}
+.slide{position:relative;width:297mm;height:210mm;padding:16mm 16mm 12mm;background:radial-gradient(circle at 10% 16%, rgba(70,180,174,.11) 0%, rgba(70,180,174,.045) 18%, transparent 38%), radial-gradient(circle at 92% 82%, rgba(87,130,220,.12) 0%, rgba(87,130,220,.045) 20%, transparent 40%), #ffffff;border:1px solid #d7e4ec;box-shadow:var(--shadow);overflow:hidden;page-break-after:always}
+.slide-bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 82% 18%, rgba(71,167,190,.07), transparent 0 25%), radial-gradient(circle at 18% 78%, rgba(82,119,209,.06), transparent 0 22%)}
+.slide:after{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(115,145,165,.10) .55px, transparent .65px);background-size:11px 11px;opacity:.12}
+.header-row{position:relative;display:flex;justify-content:space-between;align-items:center;z-index:2}
+.kicker{font-size:9.1pt;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#4e70c7}
+.page{font-size:9.4pt;font-weight:700;color:#7990aa}
+.title{position:relative;z-index:2;margin:3mm 0 5mm;font-size:26.5pt;line-height:1.18;color:#152d52;letter-spacing:-.02em}
+.content{position:relative;z-index:2;height:calc(100% - 28mm);display:flex;flex-direction:column;gap:4.6mm}
+.speaker{position:absolute;left:16mm;right:16mm;bottom:7mm;border-top:1px dashed #ccd8e1;padding-top:2.5mm;font-size:8.7pt;color:#718097;z-index:2}
+.footer-note{position:absolute;left:16mm;bottom:14mm;font-size:13pt;font-weight:700;color:#5871b8;z-index:2}
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:8mm;align-items:center;height:100%;padding-top:2mm}
+.eyebrow{font-size:11pt;font-weight:700;letter-spacing:.12em;color:#5871b8;margin-top:4mm}
+.hero-title{font-size:30.5pt;font-weight:850;line-height:1.2;color:#162d51;margin:5mm 0}
+.hero-sub{font-size:13.7pt;line-height:1.55;color:#51647d;margin:0 0 6mm;max-width:145mm}
+.hero-tags,.legend-grid{display:flex;flex-wrap:wrap;gap:3mm}
+.hero-tags span,.tag{display:inline-flex;align-items:center;justify-content:center;padding:2.2mm 4mm;border-radius:999px;font-size:10pt;font-weight:700;background:rgba(255,255,255,.72);border:1.8px solid #d6e2ea;color:#4d627d}
+.hero-tags.narrow span{font-size:9.5pt}
+.hero-right{position:relative;height:140mm;border-radius:14mm;border:1.8px solid #cfdce5;background:linear-gradient(180deg, rgba(240,245,249,.92), rgba(231,238,243,.96));overflow:hidden}
+.db-orbit{position:absolute;border-radius:50%;border:1.8px dashed rgba(90,136,200,.38)}
+.orbit-1{width:112mm;height:112mm;left:22mm;top:14mm}
+.orbit-2{width:82mm;height:82mm;left:37mm;top:29mm}
+.orbit-3{width:52mm;height:52mm;left:52mm;top:44mm}
+.db-core{position:absolute;left:58mm;top:50mm;width:40mm;height:40mm;border-radius:50%;background:linear-gradient(180deg,#ffffff,#f4fbfa);border:2px solid rgba(101,188,180,.55);display:flex;align-items:center;justify-content:center;font-size:13pt;font-weight:800;color:#315b63;box-shadow:0 10px 22px rgba(89,150,146,.18)}
+.floating{position:absolute;padding:3.5mm 5mm;border-radius:999px;background:#fff;border:2px solid #d8e6ef;font-weight:800;font-size:12pt;box-shadow:0 5px 14px rgba(46,71,102,.08)}
+.n1{left:16mm;top:19mm;border-color:rgba(101,136,216,.55);color:#3552a1}
+.n2{right:17mm;top:34mm;border-color:rgba(228,161,93,.6);color:#8e5620}
+.n3{right:25mm;bottom:32mm;border-color:rgba(139,142,214,.58);color:#585cb1}
+.n4{left:26mm;bottom:20mm;border-color:rgba(101,188,180,.64);color:#2d7c74}
+.two-col{display:grid;grid-template-columns:1fr 1fr}
+.gap-lg{gap:8mm}.gap-md{gap:5mm}
+.stack{display:flex;flex-direction:column}
+.align-center{align-items:center}
+.panel,.quote-box,.warn-box,.note-strip{background:rgba(249,252,253,.86);border-radius:6mm;padding:5.5mm 6mm;border:2px solid #dde7ee;backdrop-filter:blur(2px)}
+.panel h3,.quote-box h3{margin:0 0 3mm;font-size:15.6pt;color:#17325b}
+.body-copy,.panel p,.panel li{font-size:10.9pt;line-height:1.5;color:#4a5f79;margin:0}
+.big-list{margin:0;padding-left:6mm}.big-list li{font-size:11.4pt;line-height:1.5;color:#425876;margin:1.5mm 0}
+.compact-list li{margin:1mm 0}
+.clean-list{margin:0;padding-left:5.5mm}.clean-list li{font-size:10.9pt;line-height:1.48;color:#465b76;margin:1.4mm 0}
+.quote-big{font-size:18.8pt;font-weight:850;line-height:1.32;color:#1c3156}.quote-mid{font-size:12.5pt;font-weight:700;color:#516789;margin-bottom:2mm}.quote-small{font-size:11.1pt;line-height:1.5;color:#4f6179}
+.accent-blue{border-color:rgba(101,136,216,.5); background:linear-gradient(180deg, rgba(251,253,255,.92), rgba(231,239,249,.78))}
+.accent-teal{border-color:rgba(101,188,180,.55); background:linear-gradient(180deg, rgba(251,253,253,.92), rgba(229,244,242,.80))}
+.accent-orange{border-color:rgba(228,161,93,.58); background:linear-gradient(180deg, rgba(253,252,250,.92), rgba(250,241,231,.80))}
+.accent-violet{border-color:rgba(139,142,214,.55); background:linear-gradient(180deg, rgba(251,252,254,.92), rgba(237,237,248,.80))}
+.accent-blue-light{border:2px solid rgba(101,136,216,.35); background:rgba(237,243,255,.9)}
+.accent-violet-light{border:2px solid rgba(139,142,214,.35); background:rgba(244,242,255,.92)}
+.warn-box{border-color:#efc8ba;background:linear-gradient(180deg,#fffaf7,#fff3ee);font-size:10.9pt;line-height:1.55;color:#7a4f44}
+.step-flow{display:flex;align-items:center;justify-content:center}
+.step-flow.vertical{flex-direction:column}.step-flow.compact .step-box{min-width:64mm}.step-flow.spacious .step-box{min-width:72mm;padding:4.4mm 5.5mm}
+.step-box{min-width:58mm;padding:3.5mm 5mm;border-radius:18px;background:#fff;border:2px solid #d8e5ee;text-align:center;font-size:10.7pt;font-weight:800;color:#253a59;box-shadow:0 4px 12px rgba(47,69,96,.06)}
+.step-box.active{border-color:rgba(101,136,216,.62); background:#f7faff}
+.step-box.active2{border-color:rgba(101,188,180,.68); background:#f4fcfb}
+.step-box.active3{border-color:rgba(228,161,93,.68); background:#fffaf5}
+.step-arrow{font-size:18pt;color:#7a8ea8;font-weight:800}
+.centerflow{justify-content:flex-start}
+.example-box{padding:4mm 4.5mm;border-radius:4mm;background:#fff;border:1.8px solid #d9e3ea;font-size:11.5pt;line-height:1.46;color:#1d3150}
+.soft-box{padding:3.3mm 4mm;border-radius:4mm;background:#fff;border:1.5px solid #dce6ee;font-size:10.3pt;color:#4c5d71}
+.mini-grid{display:grid;grid-template-columns:1fr;gap:3mm;margin-bottom:3mm}
+.code-layout{grid-template-columns:1.15fr .85fr;gap:7mm}
+.code-card{background:var(--code);border:1.6px solid var(--code-border);border-radius:6mm;padding:5mm 5mm 4.5mm;color:#ebf2ff;box-shadow:0 10px 22px rgba(18,34,54,.18);display:flex;flex-direction:column;min-height:0}
+.code-card pre{margin:0;font-family:'Cascadia Code','D2Coding',Consolas,monospace;font-size:7.25pt;line-height:1.34;white-space:pre-wrap;word-break:break-word;color:#ebf2ff}
+.code-card.tall pre{font-size:6.95pt;line-height:1.32}
+.code-card.medium pre{font-size:7.05pt;line-height:1.33}
+.code-card.big-full{flex:1}
+.code-card.big-full pre{font-size:7.6pt;line-height:1.34}
+.code-card.wide-code pre{font-size:6.95pt;line-height:1.31}
+.code-card.compact-code pre{font-size:7.2pt;line-height:1.31}
+.code-head{font-size:9pt;font-weight:800;letter-spacing:.08em;color:#9dc1ff;margin-bottom:3mm;text-transform:uppercase}
+.note-strip{font-size:11pt;line-height:1.45;color:#3e5574}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:7mm}
+.semantic{border-color:rgba(101,136,216,.45);background:#f1f6ff;color:#4b6bc0;margin-bottom:3mm;width:max-content}
+.lexical{border-color:rgba(228,161,93,.45);background:#fff4e6;color:#b36a1e;margin-bottom:3mm;width:max-content}
+.pipeline-row{display:flex;align-items:center;justify-content:center;gap:4mm;flex-wrap:wrap}
+.pipeline-row.spread{justify-content:space-between}
+.large-top{margin-top:3mm}
+.pipe-box{padding:4mm 5mm;border-radius:18px;border:2px solid #d8e4ee;background:#fff;font-size:11.2pt;font-weight:800;color:#243957;text-align:center;min-width:34mm}
+.pipe-stack{display:flex;flex-direction:column;gap:3mm}
+.pipe-arrow{font-size:20pt;color:#8397ad;font-weight:700}
+.pipe-merge{font-size:18pt;color:#6d7f96;font-weight:800}
+.dense-c{border-color:rgba(101,136,216,.6);background:#f8fbff;color:#33539e}
+.bm25-c{border-color:rgba(228,161,93,.6);background:#fffaf3;color:#95561b}
+.hybrid-c{border-color:rgba(101,188,180,.64);background:#f5fcfb;color:#28756d}
+.rerank-c{border-color:rgba(212,145,166,.6);background:#fff6f8;color:#9c5672}
+.score-box{padding:4mm 4.5mm;border-radius:4mm;border:1.8px solid #d8e4eb;background:#fff;font-size:11.3pt;line-height:1.52;color:#31465f}
+.formula-panel{padding-bottom:4mm}
+.formula-img{width:100%;max-width:110mm;display:block;margin:1mm auto 4mm;background:#fff;border-radius:4mm;border:1.4px solid #dce5ee;padding:2.5mm}
+.legend-grid{display:grid;grid-template-columns:1fr;gap:2mm;font-size:10.4pt;color:#4f6177}
+.rank-table{width:100%;border-collapse:collapse;font-size:11pt;background:#fff;border-radius:3mm;overflow:hidden}
+.rank-table th,.rank-table td{border:1px solid #dde6ee;padding:2.8mm 3.5mm;text-align:center;color:#334a67}
+.rank-table th{background:#f6f9fd;color:#395271;font-weight:800}
+.calc-box{padding:4mm 4.5mm;border-radius:4mm;background:#fff;border:1.8px solid #d9e4eb;font-family:Consolas,monospace;font-size:12.7pt;line-height:1.45;color:#233a57}
+.wide-quote{margin-top:2mm;align-items:center}
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5mm}
+.summary-grid .panel h3{font-size:17pt}
+.next-row{margin-top:2mm}
+.appendix-title{font-size:19pt;font-weight:800;color:#224066;margin-bottom:2mm}
+.small-pipe .pipe-box{min-width:28mm}
+@media print{body{padding:0;background:#fff}.deck{gap:0}.slide{box-shadow:none;margin:0;break-after:page}@page{size:A4 landscape;margin:0}}
+
+/* ==============================
+   POLISHED LECTURE MATERIAL THEME
+   visual-only override: content unchanged
+   ============================== */
+:root{
+  --ink:#17304f;
+  --muted:#60738a;
+  --line:#d8e5ec;
+  --blue:#557ed3;
+  --teal:#4eb4ad;
+  --orange:#df9a55;
+  --violet:#8487d6;
+  --code:#102238;
+  --code-border:#2d4e6c;
+  --shadow:0 14px 36px rgba(41,72,97,.11);
+}
+html,body{
+  background:linear-gradient(180deg,#eef4f7 0%,#e8f0f4 100%);
+  color:var(--ink);
+}
+body{padding:10mm 0}
+.deck{gap:10mm}
+.slide{
+  padding:14mm 16mm 12mm;
+  border:1px solid #dbe7ed;
+  box-shadow:0 16px 42px rgba(34,66,92,.12);
+  background:
+    radial-gradient(ellipse at 6% 6%, rgba(78,180,173,.115) 0%, rgba(78,180,173,.052) 18%, transparent 36%),
+    radial-gradient(ellipse at 96% 92%, rgba(85,126,211,.105) 0%, rgba(85,126,211,.045) 21%, transparent 40%),
+    linear-gradient(135deg,#ffffff 0%,#ffffff 48%,#fbfdff 100%);
+}
+.slide-bg{
+  background:
+    radial-gradient(circle at 78% 12%, rgba(73,167,189,.045), transparent 0 22%),
+    radial-gradient(circle at 20% 82%, rgba(82,119,209,.040), transparent 0 20%);
+}
+.slide:after{
+  background-image:
+    linear-gradient(rgba(77,117,145,.035) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(77,117,145,.035) 1px, transparent 1px);
+  background-size:12mm 12mm;
+  opacity:.26;
+  mask-image:linear-gradient(135deg,rgba(0,0,0,.5),transparent 42%,rgba(0,0,0,.16));
+}
+.header-row{height:9mm;align-items:flex-start}
+.kicker{
+  display:inline-flex;align-items:center;
+  min-height:6.5mm;padding:1.2mm 3.1mm;
+  border:1.2px solid rgba(85,126,211,.28);
+  border-radius:999px;
+  background:rgba(246,249,255,.86);
+  color:#4b6eb8;
+  font-size:8.8pt;letter-spacing:.17em;
+}
+.page{
+  width:8mm;height:8mm;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:1.2px solid #d6e3eb;background:rgba(255,255,255,.78);
+  font-size:8.7pt;color:#71869c;
+}
+.title{
+  margin:3mm 0 5mm;
+  font-size:25.2pt;line-height:1.18;letter-spacing:-.028em;
+  color:#163253;
+  font-weight:820;
+}
+.content{
+  height:calc(100% - 27mm);
+  gap:4.6mm;
+  justify-content:center;
+}
+.speaker{
+  left:16mm;right:16mm;bottom:6.8mm;
+  padding-top:2.2mm;
+  border-top:1px solid #dbe5eb;
+  font-size:8.4pt;color:#74869a;
+}
+.footer-note{bottom:12.5mm;color:#5777ba;font-size:11.5pt}
+
+/* Typography hierarchy */
+.panel h3,.quote-box h3{font-size:15.2pt;letter-spacing:-.018em;color:#18365a;margin-bottom:3.2mm}
+.body-copy,.panel p,.panel li{font-size:10.6pt;line-height:1.52;color:#50647c}
+.big-list li{font-size:11.1pt;line-height:1.53;margin:1.25mm 0;color:#455b75}
+.clean-list li{font-size:10.7pt;line-height:1.5;margin:1.1mm 0}
+.quote-big{font-size:18pt;line-height:1.34;color:#19365a;letter-spacing:-.02em}
+.quote-mid{font-size:12.2pt;color:#5a708b}
+.quote-small{font-size:10.9pt;line-height:1.52}
+
+/* Lecture panels: full-color borders, restrained surfaces */
+.panel,.quote-box,.warn-box,.note-strip{
+  border-radius:5mm;
+  border-width:1.45px;
+  background:rgba(255,255,255,.83);
+  box-shadow:0 8px 22px rgba(55,83,105,.065);
+  backdrop-filter:blur(3px);
+}
+.accent-blue{
+  border-color:rgba(85,126,211,.48);
+  background:linear-gradient(145deg,rgba(255,255,255,.93),rgba(244,248,255,.82));
+}
+.accent-teal{
+  border-color:rgba(78,180,173,.50);
+  background:linear-gradient(145deg,rgba(255,255,255,.93),rgba(242,251,249,.82));
+}
+.accent-orange{
+  border-color:rgba(223,154,85,.50);
+  background:linear-gradient(145deg,rgba(255,255,255,.93),rgba(255,248,240,.83));
+}
+.accent-violet{
+  border-color:rgba(132,135,214,.50);
+  background:linear-gradient(145deg,rgba(255,255,255,.93),rgba(247,246,255,.84));
+}
+.accent-blue-light{border:1.45px solid rgba(85,126,211,.36);background:rgba(244,248,255,.90)}
+.accent-violet-light{border:1.45px solid rgba(132,135,214,.36);background:rgba(247,246,255,.92)}
+
+/* Diagram language: technical lecture, less app-like */
+.step-box,.pipe-box{
+  border-radius:4mm;
+  border-width:1.55px;
+  box-shadow:0 5px 14px rgba(49,77,100,.055);
+  background:rgba(255,255,255,.94);
+}
+.step-box{padding:3.2mm 5mm;font-size:10.5pt}
+.pipe-box{padding:3.7mm 5mm;font-size:10.9pt}
+.step-box.active,.dense-c{border-color:rgba(85,126,211,.54);background:#f7faff;color:#34569f}
+.step-box.active2,.hybrid-c{border-color:rgba(78,180,173,.58);background:#f5fcfb;color:#277a72}
+.step-box.active3,.bm25-c{border-color:rgba(223,154,85,.58);background:#fffaf4;color:#91551d}
+.rerank-c{border-color:rgba(201,132,157,.52);background:#fff8fa;color:#92536b}
+.step-arrow,.pipe-arrow{color:#8598ab}
+
+/* Tags / examples */
+.hero-tags span,.tag{
+  border-width:1.3px;
+  background:rgba(255,255,255,.88);
+  box-shadow:0 4px 12px rgba(50,80,105,.045);
+}
+.example-box,.soft-box,.score-box,.calc-box{
+  border-width:1.35px;
+  border-radius:3.6mm;
+  box-shadow:0 4px 13px rgba(47,74,94,.045);
+}
+
+/* Code blocks: lecture-editor style */
+.code-card{
+  position:relative;
+  background:linear-gradient(180deg,#102238 0%,#0d1d31 100%);
+  border:1.4px solid #31516e;
+  border-radius:5mm;
+  box-shadow:0 12px 28px rgba(16,35,55,.16);
+  padding:4.8mm 5mm 4.6mm;
+}
+.code-head{
+  position:relative;
+  padding-left:15mm;
+  font-size:8.7pt;
+  color:#9dc5ef;
+  margin-bottom:3mm;
+}
+.code-head:before{
+  content:'●  ●  ●';
+  position:absolute;left:0;top:-.1mm;
+  letter-spacing:1.6mm;
+  color:#718aa2;
+  font-size:7.2pt;
+}
+.code-card pre{font-size:7.15pt;line-height:1.36;color:#e8f1fb}
+.code-card.tall pre{font-size:6.9pt;line-height:1.33}
+.code-card.medium pre{font-size:7pt;line-height:1.34}
+.code-card.big-full pre{font-size:7.45pt;line-height:1.35}
+.code-card.wide-code pre{font-size:6.9pt;line-height:1.32}
+.code-card.compact-code pre{font-size:7.1pt;line-height:1.32}
+
+/* Cover */
+.hero{gap:12mm}
+.hero-title{font-size:29.5pt;letter-spacing:-.028em;color:#163253}
+.hero-sub{font-size:13.4pt;line-height:1.57}
+.hero-right{
+  height:132mm;
+  border-radius:9mm;
+  border:1.5px solid #cfe0e8;
+  background:
+    radial-gradient(circle at 32% 26%,rgba(78,180,173,.12),transparent 34%),
+    radial-gradient(circle at 74% 78%,rgba(85,126,211,.10),transparent 38%),
+    rgba(252,254,255,.92);
+  box-shadow:0 14px 28px rgba(51,84,108,.08);
+}
+.db-orbit{border-width:1.4px;border-style:solid;border-color:rgba(82,126,180,.20)}
+.db-core{border-color:rgba(78,180,173,.55);background:#fff;box-shadow:0 10px 22px rgba(66,139,135,.12)}
+.floating{border-width:1.45px;border-radius:4mm;box-shadow:0 6px 16px rgba(43,73,98,.07);font-size:11.2pt}
+
+/* Formula, ranks, summary */
+.formula-img{border-width:1.2px;border-radius:3.5mm;box-shadow:0 4px 12px rgba(52,76,96,.04)}
+.rank-table{border-radius:3.5mm;overflow:hidden;box-shadow:0 4px 12px rgba(52,76,96,.04)}
+.rank-table th,.rank-table td{border-color:#dce7ed;padding:2.5mm 3.3mm;font-size:10.6pt}
+.rank-table th{background:#f7fafc}
+.summary-grid{gap:4.5mm}
+.summary-grid .panel{padding:5mm}
+.summary-grid .panel h3{font-size:15.8pt}
+.appendix-title{font-size:17.8pt;color:#284765}
+
+/* Better vertical rhythm on compact and code-heavy slides */
+.slide:nth-child(4) .content,
+.slide:nth-child(8) .content,
+.slide:nth-child(9) .content,
+.slide:nth-child(10) .content,
+.slide:nth-child(14) .content,
+.slide:nth-child(15) .content,
+.slide:nth-child(17) .content,
+.slide:nth-child(18) .content,
+.slide:nth-child(19) .content,
+.slide:nth-child(20) .content{justify-content:flex-start;padding-top:1mm}
+
+/* More editorial spacing on conceptual slides */
+.slide:nth-child(2) .content,
+.slide:nth-child(3) .content,
+.slide:nth-child(5) .content,
+.slide:nth-child(7) .content,
+.slide:nth-child(11) .content,
+.slide:nth-child(12) .content,
+.slide:nth-child(13) .content,
+.slide:nth-child(16) .content{padding-top:2.5mm;padding-bottom:5mm}
+
+@media print{
+  html,body{background:#fff}
+  .slide{box-shadow:none}
+}
+
+</style></head>
+<body><main class="deck"><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">05. RETRIEVAL ENGINEERING</div><div class="page">01</div></div>
+      <h1 class="title">Retrieval Engineering 발표자료</h1>
+      <div class="content">
+<div class="hero">
+  <div class="hero-left">
+    <div class="eyebrow">RAG · CHROMADB · HYBRID RETRIEVAL</div>
+    <div class="hero-title">Dense → BM25 → Hybrid → RRF</div>
+    <p class="hero-sub">질문에 답하기 전에, <b>어떤 문서 조각(chunk)을 가져올 것인가?</b><br>Retrieval Engineering의 핵심을 예제와 코드 중심으로 정리한 발표자료</p>
+    <div class="hero-tags">
+      <span>Semantic Search</span><span>Lexical Search</span><span>Rank Fusion</span><span>Top-k Context</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="db-orbit orbit-1"></div>
+    <div class="db-orbit orbit-2"></div>
+    <div class="db-orbit orbit-3"></div>
+    <div class="db-core">ChromaDB</div>
+    <div class="floating n1">Dense</div>
+    <div class="floating n2">BM25</div>
+    <div class="floating n3">RRF</div>
+    <div class="floating n4">Top‑k</div>
+  </div>
+</div>
+<div class="footer-note">05_retrieval_engineering_ai_trend.ipynb</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">05. RETRIEVAL ENGINEERING</div><div class="page">02</div></div>
+      <h1 class="title">이 파일은 RAG의 “검색기”를 개선한다</h1>
+      <div class="content">
+<div class="two-col gap-lg">
+  <div class="panel accent-blue">
+    <h3>이번 실습의 위치</h3>
+    <div class="step-flow vertical compact">
+      <div class="step-box">01 Naive RAG</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box">02 Document Processing</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box">03 Query Rewriting / 04 Multi Query</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box active">05 Retrieval Engineering</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box">06 Reranking</div>
+    </div>
+  </div>
+  <div class="stack gap-md">
+    <div class="panel accent-teal">
+      <h3>오늘 기억할 핵심 4가지</h3>
+      <ol class="big-list">
+        <li>Dense Retrieval과 BM25의 차이</li>
+        <li>Hybrid Retrieval이 필요한 이유</li>
+        <li>서로 다른 점수를 직접 합치기 어려운 이유</li>
+        <li>RRF가 순위(rank)를 결합하는 방법</li>
+      </ol>
+    </div>
+    <div class="quote-box accent-violet">
+      <div class="quote-big">Dense는 <b>의미</b>, BM25는 <b>단어</b>,<br>RRF는 <b>순위</b>를 본다.</div>
+    </div>
+  </div>
+</div>
+</div>
+      <div class="speaker">발표 포인트 · 이 실습은 LLM 답변 생성이 아니라, 좋은 후보 문서를 더 잘 고르는 단계입니다.</div>
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">05. RETRIEVAL ENGINEERING</div><div class="page">03</div></div>
+      <h1 class="title">왜 검색 품질이 RAG 품질을 좌우할까?</h1>
+      <div class="content">
+<div class="two-col gap-lg">
+  <div class="panel accent-teal">
+    <h3>왜 chunk를 잘 찾는 게 중요한가?</h3>
+    <div class="step-flow vertical spacious">
+      <div class="step-box">긴 보고서 / 문서 묶음</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box">여러 chunk로 분할</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box active2">질문과 관련된 chunk 검색</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box">LLM Context로 전달</div>
+    </div>
+  </div>
+  <div class="stack gap-md">
+    <div class="panel accent-orange">
+      <h3>예시 질문</h3>
+      <div class="example-box">“기업에서는 AI를 업무에 어떻게 활용할 것으로 전망하나요?”</div>
+      <p class="body-copy">검색기가 엉뚱한 chunk를 가져오면, 뒤에 있는 LLM이 아무리 좋아도 답변 근거가 약해진다.</p>
+    </div>
+    <div class="quote-box accent-blue">
+      <div class="quote-mid">Retrieval Engineering의 질문은 단순하다.</div>
+      <div class="quote-big">“어떤 chunk를 위로 올릴 것인가?”</div>
+    </div>
+  </div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">1. ENVIRONMENT</div><div class="page">04</div></div>
+      <h1 class="title">환경 설정 · 같은 corpus로 공정하게 비교</h1>
+      <div class="content">
+<div class="two-col code-layout">
+  <div class="code-card tall">
+    <div class="code-head">CELL 2 · ENVIRONMENT</div>
+    <pre>import sys
+import re
+from pathlib import Path
+
+from langchain_chroma import Chroma
+from langchain_core.documents import Document
+from rank_bm25 import BM25Okapi
+
+# 상위 폴더의 common_config 모듈을 불러오기 위해 경로를 추가한다.
+sys.path.append(&quot;..&quot;)
+from config.common_configimport embedding_model
+
+
+# 02번 실습에서 저장한 ChromaDB 경로와 컬렉션 이름
+DB_PATH = Path(&quot;chroma_db/ai_trend_report_docling&quot;)
+COLLECTION_NAME = &quot;ai_trend_report_2026_docling&quot;
+
+# DB가 없으면 이후 검색을 할 수 없으므로 먼저 02번 실습을 실행하도록 안내한다.
+if not DB_PATH.exists():
+    raise FileNotFoundError(
+        &quot;02_document_processing_ai_trend.ipynb를 먼저 실행하세요.&quot;
+    )
+
+# 임베딩 모델을 생성한다. (Dense 검색에서 Query와 chunk를 벡터로 바꾸는 데 사용)
+embeddings = embedding_model()
+
+# 저장된 ChromaDB 컬렉션을 불러온다. (새로 만들지 않고 기존 데이터를 사용)
+vector_store = Chroma(
+    collection_name=COLLECTION_NAME,
+    embedding_function=embeddings,
+    persist_directory=str(DB_PATH),
+)
+
+# 저장된 chunk 개수를 확인한다.
+print(&quot;저장된 chunk 수:&quot;, vector_store._collection.count())</pre>
+  </div>
+  <div class="stack gap-md">
+    <div class="panel accent-blue">
+      <h3>핵심 역할</h3>
+      <ul class="clean-list">
+        <li>02번 실습에서 만든 <b>ChromaDB</b>를 재사용</li>
+        <li>같은 chunk corpus를 기준으로 Dense와 BM25 비교</li>
+        <li><code>embedding_model()</code>은 Dense 검색용</li>
+        <li><code>vector_store._collection.count()</code>로 저장 chunk 수 확인</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">2. DENSE RETRIEVAL</div><div class="page">05</div></div>
+      <h1 class="title">Dense Retrieval · “뜻이 비슷한 문서” 찾기</h1>
+      <div class="content">
+<div class="two-col gap-lg align-center">
+  <div class="panel accent-blue">
+    <h3>Dense Retrieval</h3>
+    <div class="step-flow vertical compact centerflow">
+      <div class="step-box">Query</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box">Embedding</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box active">Vector Search</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box">Top‑k Documents</div>
+    </div>
+  </div>
+  <div class="stack gap-md">
+    <div class="panel accent-teal">
+      <h3>Dense의 강점</h3>
+      <ul class="clean-list">
+        <li>표현이 달라도 의미가 비슷하면 찾을 수 있다.</li>
+        <li>자연어 질문에 강하다.</li>
+        <li>의미 기반 검색(Semantic Search)이다.</li>
+      </ul>
+    </div>
+    <div class="panel accent-violet">
+      <h3>예시</h3>
+      <div class="mini-grid">
+        <div class="soft-box">질문: “회사에서 AI를 어떤 일에 쓰게 될까요?”</div>
+        <div class="soft-box">문서: “기업의 생성형 AI 활용이 증가한다.”</div>
+      </div>
+      <p class="body-copy">단어는 다르지만 의미가 비슷하므로 관련 문서로 검색될 가능성이 높다.</p>
+    </div>
+  </div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">2. DENSE RETRIEVAL</div><div class="page">06</div></div>
+      <h1 class="title">Dense 구현 코드 · 실제로는 매우 짧다</h1>
+      <div class="content">
+<div class="code-card big-full">
+  <div class="code-head">CELL 4 · DENSE SEARCH</div>
+  <pre>def dense_search(query, k=5):
+    # Query를 embedding으로 바꾼 뒤, 벡터 거리가 가까운 문서 k개를 찾는다.
+    return vector_store.similarity_search(query, k=k)</pre>
+</div>
+<div class="note-strip accent-blue-light">핵심은 한 줄이다. <code>similarity_search(query, k=k)</code>가 질문과 의미적으로 가까운 문서를 찾아준다.</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">3. BM25 RETRIEVAL</div><div class="page">07</div></div>
+      <h1 class="title">BM25 Retrieval · “정확한 단어” 찾기</h1>
+      <div class="content">
+<div class="two-col gap-lg align-center">
+  <div class="panel accent-orange">
+    <h3>BM25 Retrieval</h3>
+    <div class="step-flow vertical compact centerflow">
+      <div class="step-box">Query Terms</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box">Keyword Matching</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box active3">BM25 Score</div>
+      <div class="step-arrow">↓</div>
+      <div class="step-box">Top‑k Documents</div>
+    </div>
+  </div>
+  <div class="stack gap-md">
+    <div class="panel accent-orange">
+      <h3>BM25의 강점</h3>
+      <ul class="clean-list">
+        <li>정확한 단어가 들어간 문서를 찾는 데 강하다.</li>
+        <li>정책명, 전문용어, 고유명사 검색에 유리하다.</li>
+        <li>키워드 기반 검색(Lexical Search)이다.</li>
+      </ul>
+    </div>
+    <div class="panel accent-teal">
+      <h3>대표 예시</h3>
+      <div class="hero-tags narrow">
+        <span>AI 기본법</span><span>EU AI Act</span><span>One‑Source Multi‑Use</span>
+      </div>
+      <p class="body-copy">정확한 표현 자체가 중요할 때 Dense보다 BM25가 더 잘 잡을 수 있다.</p>
+    </div>
+  </div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">3. BM25 RETRIEVAL</div><div class="page">08</div></div>
+      <h1 class="title">BM25 구성 코드 · corpus 만들기</h1>
+      <div class="content">
+<div class="two-col code-layout">
+  <div class="code-card tall">
+    <div class="code-head">CELL 6 · BM25 BUILD (1/2)</div>
+    <pre># ChromaDB에 저장된 chunk(문서 본문과 메타데이터)를 모두 가져온다.
+stored = vector_store.get(
+    include=[&quot;documents&quot;, &quot;metadatas&quot;]
+)
+
+# Dense와 BM25가 같은 문서를 사용하도록 Document 목록을 만든다.
+corpus_docs = []
+
+for text, metadata in zip(
+    stored[&quot;documents&quot;],
+    stored[&quot;metadatas&quot;],
+):
+    doc = Document(
+        page_content=text,
+        metadata=metadata or {},  # metadata가 None이면 빈 dict로 대체
+    )
+    corpus_docs.append(doc)
+
+
+# BM25는 단어 단위로 검색하므로 소문자로 바꾼 뒤 단어(\w+)만 추출한다.</pre>
+  </div>
+  <div class="stack gap-md">
+    <div class="panel accent-orange">
+      <h3>여기서 하는 일</h3>
+      <ol class="big-list compact-list">
+        <li>ChromaDB에서 문서와 메타데이터를 모두 꺼낸다.</li>
+        <li>Dense와 BM25가 같은 문서를 사용하도록 <code>corpus_docs</code>를 만든다.</li>
+        <li>BM25용으로 텍스트를 토큰화할 준비를 한다.</li>
+      </ol>
+    </div>
+    <div class="quote-box accent-blue">
+      <div class="quote-mid">핵심 포인트</div>
+      <div class="quote-small">Dense와 BM25가 <b>동일한 corpus</b>를 쓰도록 맞춰야 비교가 공정하다.</div>
+    </div>
+  </div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">3. BM25 RETRIEVAL</div><div class="page">09</div></div>
+      <h1 class="title">BM25 구성 코드 · tokenization과 검색</h1>
+      <div class="content">
+<div class="two-col gap-md">
+  <div class="code-card tall">
+    <div class="code-head">CELL 6 · BM25 BUILD (2/2)</div>
+    <pre>def tokenize(text):
+    return re.findall(r&quot;\w+&quot;, text.lower())
+
+
+# 모든 chunk를 토큰 리스트로 바꾼다. (BM25는 토큰 리스트를 입력으로 받는다)
+tokenized_corpus = []
+
+for doc in corpus_docs:
+    tokens = tokenize(doc.page_content)
+    tokenized_corpus.append(tokens)
+
+
+# 토큰화된 corpus로 BM25 검색기를 생성한다.
+bm25 = BM25Okapi(tokenized_corpus)
+
+print(&quot;BM25 문서 수:&quot;, len(corpus_docs))</pre>
+  </div>
+  <div class="stack gap-md">
+    <div class="code-card medium">
+      <div class="code-head">CELL 7 · BM25 SEARCH</div>
+      <pre>def bm25_search(query, k=5):
+    # 질문도 corpus와 같은 방식으로 토큰화한다.
+    query_tokens = tokenize(query)
+
+    # 질문 토큰과 가장 잘 맞는 BM25 점수 상위 k개 문서를 반환한다.
+    return bm25.get_top_n(
+        query_tokens,
+        corpus_docs,
+        n=k,
+    )</pre>
+    </div>
+    <div class="panel accent-orange">
+      <h3>주의할 점</h3>
+      <p class="body-copy"><code>tokenize()</code>는 현재 <code>\w+</code> 기반의 단순 토큰화다. 그래서 BM25 성능은 tokenizer 품질의 영향을 받는다.</p>
+    </div>
+  </div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">4. DENSE vs BM25</div><div class="page">10</div></div>
+      <h1 class="title">질문 성격에 따라 다른 검색 결과가 나온다</h1>
+      <div class="content">
+<div class="compare-grid">
+  <div class="panel accent-blue">
+    <div class="tag semantic">SEMANTIC</div>
+    <h3>Dense가 유리할 수 있는 질문</h3>
+    <div class="example-box">“기업 내부에서 AI가 업무에 어떻게 활용될 것으로 전망되나요?”</div>
+    <p class="body-copy">표현이 달라도 의미가 비슷한 문서를 찾는 데 강점</p>
+  </div>
+  <div class="panel accent-orange">
+    <div class="tag lexical">LEXICAL</div>
+    <h3>BM25가 유리할 수 있는 질문</h3>
+    <div class="example-box">“One‑Source Multi‑Use는 어떤 맥락에서 제시되었나요?”</div>
+    <p class="body-copy">정확한 용어가 들어간 문서를 찾는 데 강점</p>
+  </div>
+</div>
+<div class="code-card wide-code">
+  <div class="code-head">CELL 9 · SAME QUERY, DIFFERENT RETRIEVERS</div>
+  <pre>def print_results(title, docs):
+    # 검색 방식 이름(title)과 함께 결과 문서의 chunk 번호와 페이지를 출력한다.
+    print(f&quot;\n[{title}]&quot;)
+
+    for rank, doc in enumerate(docs, start=1):
+        print(
+            f&quot;{rank}. &quot;
+            f&quot;chunk={doc.metadata.get(&#x27;chunk_id&#x27;)} &quot;
+            f&quot;| pages={doc.metadata.get(&#x27;pages&#x27;)}&quot;
+        )
+
+
+# Dense가 유리할 수 있는 의미 중심 질문
+query1 = &quot;기업 내부에서 AI가 업무에 어떻게 활용될 것으로 전망되나요?&quot;
+
+# 같은 질문에 대해 Dense와 BM25의 결과를 각각 상위 3개씩 비교한다.
+dense_docs = dense_search(query1, k=3)
+bm25_docs = bm25_search(query1, k=3)
+
+print(&quot;\nQUERY:&quot;, query1)
+print_results(&quot;Dense&quot;, dense_docs)
+print_results(&quot;BM25&quot;, bm25_docs)
+
+
+# BM25가 유리할 수 있는 정확한 용어 중심 질문
+query2 = &quot;One-Source Multi-Use는 어떤 맥락에서 제시되었나요?&quot;
+
+# 두 번째 질문도 같은 방식으로 Dense와 BM25 결과를 비교한다.
+dense_docs = dense_search(query2, k=3)
+bm25_docs = bm25_search(query2, k=3)
+
+print(&quot;\nQUERY:&quot;, query2)
+print_results(&quot;Dense&quot;, dense_docs)
+print_results(&quot;BM25&quot;, bm25_docs)</pre>
+</div>
+</div>
+      <div class="speaker">발표 포인트 · 어느 쪽이 항상 더 좋다고 결론내리는 실습이 아니라, 질문의 성격에 따라 다르게 작동함을 보는 실습입니다.</div>
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">5. HYBRID RETRIEVAL</div><div class="page">11</div></div>
+      <h1 class="title">Hybrid Retrieval · 둘을 함께 쓰되, 점수는 직접 합치지 않는다</h1>
+      <div class="content">
+<div class="two-col gap-lg">
+  <div class="panel accent-teal">
+    <h3>Hybrid Retrieval</h3>
+    <div class="pipeline-row">
+      <div class="pipe-box dense-c">Dense Retrieval</div>
+      <div class="pipe-merge">+</div>
+      <div class="pipe-box bm25-c">BM25 Retrieval</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box hybrid-c">Hybrid Retrieval</div>
+    </div>
+    <p class="body-copy">Dense와 BM25는 서로 다른 장점이 있으므로, 둘을 함께 사용하면 검색 후보를 더 다양하게 확보할 수 있다.</p>
+  </div>
+  <div class="stack gap-md">
+    <div class="panel accent-violet">
+      <h3>왜 점수를 직접 더하면 안 될까?</h3>
+      <div class="score-box">
+        <div><b>Dense distance</b> : 0.18, 0.25, 0.31 ...</div>
+        <div><b>BM25 score</b> : 12.4, 8.7, 5.1 ...</div>
+      </div>
+      <p class="body-copy">점수 체계가 다르기 때문에 그대로 더하거나 평균내는 방식은 적절하지 않다.</p>
+    </div>
+    <div class="quote-box accent-teal">
+      <div class="quote-mid">그래서 등장하는 방법</div>
+      <div class="quote-big">RRF · Reciprocal Rank Fusion</div>
+    </div>
+  </div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">6. RRF</div><div class="page">12</div></div>
+      <h1 class="title">RRF · 점수가 아니라 “순위”를 합친다</h1>
+      <div class="content">
+<div class="two-col gap-lg align-center">
+  <div class="panel accent-violet formula-panel">
+    <h3>RRF 공식</h3>
+    <img class="formula-img" src="data:image/png;base64,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" alt="RRF formula">
+    <div class="legend-grid">
+      <div><b>RRF(d)</b> : 문서 d의 최종 RRF 점수</div>
+      <div><b>r</b> : 각각의 검색기(Retriever)</div>
+      <div><b>k</b> : 순위 영향력을 조절하는 상수, 보통 60</div>
+      <div><b>rank<sub>r</sub>(d)</b> : 검색기 r에서 문서 d의 순위</div>
+    </div>
+  </div>
+  <div class="stack gap-md">
+    <div class="panel accent-blue">
+      <h3>Dense Ranking</h3>
+      <table class="rank-table">
+        <tr><th>순위</th><th>문서</th></tr>
+        <tr><td>1위</td><td>D3</td></tr>
+        <tr><td>2위</td><td>D7</td></tr>
+        <tr><td>3위</td><td>D1</td></tr>
+      </table>
+    </div>
+    <div class="panel accent-orange">
+      <h3>BM25 Ranking</h3>
+      <table class="rank-table">
+        <tr><th>순위</th><th>문서</th></tr>
+        <tr><td>1위</td><td>D1</td></tr>
+        <tr><td>2위</td><td>D4</td></tr>
+        <tr><td>3위</td><td>D3</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="note-strip accent-violet-light">핵심: RRF는 원래 점수(score)가 아니라 <b>순위(rank)</b>를 결합한다. 그래서 점수 스케일 차이를 피할 수 있다.</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">6. RRF</div><div class="page">13</div></div>
+      <h1 class="title">RRF 계산 예시 · 1 / (k + rank)</h1>
+      <div class="content">
+<div class="two-col gap-lg">
+  <div class="panel accent-teal">
+    <h3>D3 예시</h3>
+    <p>Dense 1위 + BM25 3위</p>
+    <div class="calc-box">1 / (60 + 1) + 1 / (60 + 3)<br>≈ 0.01639 + 0.01587<br><b>≈ 0.03226</b></div>
+  </div>
+  <div class="panel accent-orange">
+    <h3>D7 예시</h3>
+    <p>Dense 2위에만 등장</p>
+    <div class="calc-box">1 / (60 + 2)<br>≈ 0.01613<br><br><b>≈ 0.01613</b></div>
+  </div>
+</div>
+<div class="quote-box accent-blue wide-quote">
+  <div class="quote-big">두 검색기에서 함께 상위권이면<br>RRF 점수가 누적되어 더 위로 올라온다.</div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">6. RRF</div><div class="page">14</div></div>
+      <h1 class="title">RRF 구현 코드 · 실제로는 이 정도다</h1>
+      <div class="content">
+<div class="two-col gap-lg">
+  <div class="code-card tall">
+    <div class="code-head">CELL 12 · RRF</div>
+    <pre>def rrf(dense_docs, bm25_docs, k=60):
+    # chunk_id별 RRF 점수를 저장한다.
+    scores = {}
+
+    # chunk_id로 원래 Document를 다시 찾기 위한 저장소
+    documents = {}
+
+    # Dense 결과와 BM25 결과를 차례로 확인한다.
+    for result in [dense_docs, bm25_docs]:
+
+        # rank는 1위부터 시작한다.
+        for rank, doc in enumerate(result, start=1):
+            chunk_id = doc.metadata[&quot;chunk_id&quot;]
+
+            # 처음 등장한 chunk라면 점수를 0으로 초기화하고 Document를 저장한다.
+            if chunk_id not in scores:
+                scores[chunk_id] = 0
+                documents[chunk_id] = doc
+
+            # RRF 공식: 검색기별로 1 / (k + rank)를 더한다.
+            # 두 검색기에서 모두 상위권이면 점수가 커진다.
+            scores[chunk_id] += 1 / (k + rank)
+
+    # RRF 점수가 높은 chunk_id 순서로 정렬한다.
+    ranked_ids = sorted(
+        scores,
+        key=scores.get,
+        reverse=True,
+    )
+
+    # 정렬된 순서대로 Document 목록을 반환한다.
+    return [
+        documents[chunk_id]
+        for chunk_id in ranked_ids
+    ]</pre>
+  </div>
+  <div class="stack gap-md">
+    <div class="panel accent-violet">
+      <h3>사람 말로 번역하면</h3>
+      <ol class="big-list compact-list">
+        <li>Dense 결과와 BM25 결과를 모두 돈다.</li>
+        <li>각 문서의 <b>rank</b>를 확인한다.</li>
+        <li><code>1 / (k + rank)</code>를 chunk별로 누적한다.</li>
+        <li>누적 점수가 높은 chunk부터 다시 정렬한다.</li>
+      </ol>
+    </div>
+    <div class="quote-box accent-blue">
+      <div class="quote-small"><b>중요:</b> RRF는 문서 내용을 다시 읽고 판단하는 모델이 아니다. <b>검색 결과의 순위만 결합</b>한다.</div>
+    </div>
+  </div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">7. FINAL COMPARISON</div><div class="page">15</div></div>
+      <h1 class="title">최종 파이프라인 · Dense 8 + BM25 8 → Hybrid Top‑5</h1>
+      <div class="content">
+<div class="pipeline-row spread large-top">
+  <div class="pipe-box">Query</div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-stack">
+    <div class="pipe-box dense-c">Dense Top‑8</div>
+    <div class="pipe-box bm25-c">BM25 Top‑8</div>
+  </div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-box hybrid-c">RRF</div>
+  <div class="pipe-arrow">→</div>
+  <div class="pipe-box">Hybrid Top‑5</div>
+</div>
+<div class="code-card wide-code compact-code">
+  <div class="code-head">CELL 14 · END‑TO‑END RETRIEVAL</div>
+  <pre>query = &quot;AI 기본법 시행령과 글로벌 규제 정합성은 어떻게 설명되나요?&quot;
+
+# 1. Dense에서 후보 문서 8개를 검색한다.
+dense_docs = dense_search(query, k=8)
+
+# 2. BM25에서 후보 문서 8개를 검색한다.
+bm25_docs = bm25_search(query, k=8)
+
+# 3. 두 검색 결과의 순위를 RRF로 결합한다.
+hybrid_docs = rrf(
+    dense_docs,
+    bm25_docs,
+    k=60,
+)
+
+# 4. 최종 Top-5만 사용한다.
+hybrid_docs = hybrid_docs[:5]
+
+
+print(&quot;QUERY:&quot;, query)
+
+# Dense, BM25, Hybrid 결과의 순위를 나란히 비교한다.
+print_results(&quot;Dense&quot;, dense_docs[:5])
+print_results(&quot;BM25&quot;, bm25_docs[:5])
+print_results(&quot;Hybrid + RRF&quot;, hybrid_docs)</pre>
+</div>
+<div class="note-strip accent-blue-light">여기까지는 아직 <b>답변 생성</b>이 아니다. 좋은 후보 문서를 고르는 단계다.</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">8. SUMMARY</div><div class="page">16</div></div>
+      <h1 class="title">핵심 정리와 다음 단계</h1>
+      <div class="content">
+<div class="summary-grid">
+  <div class="panel accent-blue"><h3>Dense</h3><p>Semantic Search<br>의미가 비슷한 문서를 찾는다.</p></div>
+  <div class="panel accent-orange"><h3>BM25</h3><p>Lexical Search<br>정확한 단어가 포함된 문서를 찾는다.</p></div>
+  <div class="panel accent-teal"><h3>Hybrid</h3><p>Dense + BM25<br>서로 다른 장점을 함께 사용한다.</p></div>
+  <div class="panel accent-violet"><h3>RRF</h3><p>Rank Fusion<br>서로 다른 검색 결과의 순위를 결합한다.</p></div>
+</div>
+<div class="two-col gap-lg next-row">
+  <div class="panel accent-orange">
+    <h3>주의할 점</h3>
+    <ol class="big-list compact-list">
+      <li>Hybrid가 항상 Dense보다 좋은 것은 아니다.</li>
+      <li>BM25는 tokenizer 품질의 영향을 받는다.</li>
+      <li>RRF는 재판단 모델이 아니라 순위 결합 방식이다.</li>
+    </ol>
+  </div>
+  <div class="panel accent-teal">
+    <h3>그래서 다음 단계는?</h3>
+    <div class="pipeline-row small-pipe">
+      <div class="pipe-box hybrid-c">Dense + BM25 + RRF</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box">Candidate Top‑N</div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-box rerank-c">06. Reranking</div>
+    </div>
+    <p class="body-copy">RRF와 Reranking은 다르다. RRF는 순위 결합, Reranking은 후보 재평가다.</p>
+  </div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">APPENDIX</div><div class="page">17</div></div>
+      <h1 class="title">코드 모음 ① · 환경 설정과 Dense</h1>
+      <div class="content">
+<div class="appendix-title">Appendix · 원본 코드 모음</div>
+<div class="two-col gap-md">
+  <div class="code-card medium"><div class="code-head">CELL 2 · ENVIRONMENT</div><pre>import sys
+import re
+from pathlib import Path
+
+from langchain_chroma import Chroma
+from langchain_core.documents import Document
+from rank_bm25 import BM25Okapi
+
+# 상위 폴더의 common_config 모듈을 불러오기 위해 경로를 추가한다.
+sys.path.append(&quot;..&quot;)
+from config.common_configimport embedding_model
+
+
+# 02번 실습에서 저장한 ChromaDB 경로와 컬렉션 이름
+DB_PATH = Path(&quot;chroma_db/ai_trend_report_docling&quot;)
+COLLECTION_NAME = &quot;ai_trend_report_2026_docling&quot;
+
+# DB가 없으면 이후 검색을 할 수 없으므로 먼저 02번 실습을 실행하도록 안내한다.
+if not DB_PATH.exists():
+    raise FileNotFoundError(
+        &quot;02_document_processing_ai_trend.ipynb를 먼저 실행하세요.&quot;
+    )
+
+# 임베딩 모델을 생성한다. (Dense 검색에서 Query와 chunk를 벡터로 바꾸는 데 사용)
+embeddings = embedding_model()
+
+# 저장된 ChromaDB 컬렉션을 불러온다. (새로 만들지 않고 기존 데이터를 사용)
+vector_store = Chroma(
+    collection_name=COLLECTION_NAME,
+    embedding_function=embeddings,
+    persist_directory=str(DB_PATH),
+)
+
+# 저장된 chunk 개수를 확인한다.
+print(&quot;저장된 chunk 수:&quot;, vector_store._collection.count())</pre></div>
+  <div class="code-card medium"><div class="code-head">CELL 4 · DENSE SEARCH</div><pre>def dense_search(query, k=5):
+    # Query를 embedding으로 바꾼 뒤, 벡터 거리가 가까운 문서 k개를 찾는다.
+    return vector_store.similarity_search(query, k=k)</pre></div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">APPENDIX</div><div class="page">18</div></div>
+      <h1 class="title">코드 모음 ② · BM25 전체</h1>
+      <div class="content">
+<div class="two-col gap-md">
+  <div class="code-card tall"><div class="code-head">CELL 6 · BM25 BUILD</div><pre># ChromaDB에 저장된 chunk(문서 본문과 메타데이터)를 모두 가져온다.
+stored = vector_store.get(
+    include=[&quot;documents&quot;, &quot;metadatas&quot;]
+)
+
+# Dense와 BM25가 같은 문서를 사용하도록 Document 목록을 만든다.
+corpus_docs = []
+
+for text, metadata in zip(
+    stored[&quot;documents&quot;],
+    stored[&quot;metadatas&quot;],
+):
+    doc = Document(
+        page_content=text,
+        metadata=metadata or {},  # metadata가 None이면 빈 dict로 대체
+    )
+    corpus_docs.append(doc)
+
+
+# BM25는 단어 단위로 검색하므로 소문자로 바꾼 뒤 단어(\w+)만 추출한다.
+def tokenize(text):
+    return re.findall(r&quot;\w+&quot;, text.lower())
+
+
+# 모든 chunk를 토큰 리스트로 바꾼다. (BM25는 토큰 리스트를 입력으로 받는다)
+tokenized_corpus = []
+
+for doc in corpus_docs:
+    tokens = tokenize(doc.page_content)
+    tokenized_corpus.append(tokens)
+
+
+# 토큰화된 corpus로 BM25 검색기를 생성한다.
+bm25 = BM25Okapi(tokenized_corpus)
+
+print(&quot;BM25 문서 수:&quot;, len(corpus_docs))</pre></div>
+  <div class="stack gap-md">
+    <div class="code-card medium"><div class="code-head">CELL 7 · BM25 SEARCH</div><pre>def bm25_search(query, k=5):
+    # 질문도 corpus와 같은 방식으로 토큰화한다.
+    query_tokens = tokenize(query)
+
+    # 질문 토큰과 가장 잘 맞는 BM25 점수 상위 k개 문서를 반환한다.
+    return bm25.get_top_n(
+        query_tokens,
+        corpus_docs,
+        n=k,
+    )</pre></div>
+    <div class="panel accent-orange"><h3>설명 한 줄</h3><p class="body-copy">BM25는 corpus 전체를 토큰화한 뒤, 질문도 같은 방식으로 토큰화해서 상위 문서를 찾는다.</p></div>
+  </div>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">APPENDIX</div><div class="page">19</div></div>
+      <h1 class="title">코드 모음 ③ · 비교 실험</h1>
+      <div class="content">
+<div class="code-card big-full">
+  <div class="code-head">CELL 9 · DENSE vs BM25 COMPARISON</div>
+  <pre>def print_results(title, docs):
+    # 검색 방식 이름(title)과 함께 결과 문서의 chunk 번호와 페이지를 출력한다.
+    print(f&quot;\n[{title}]&quot;)
+
+    for rank, doc in enumerate(docs, start=1):
+        print(
+            f&quot;{rank}. &quot;
+            f&quot;chunk={doc.metadata.get(&#x27;chunk_id&#x27;)} &quot;
+            f&quot;| pages={doc.metadata.get(&#x27;pages&#x27;)}&quot;
+        )
+
+
+# Dense가 유리할 수 있는 의미 중심 질문
+query1 = &quot;기업 내부에서 AI가 업무에 어떻게 활용될 것으로 전망되나요?&quot;
+
+# 같은 질문에 대해 Dense와 BM25의 결과를 각각 상위 3개씩 비교한다.
+dense_docs = dense_search(query1, k=3)
+bm25_docs = bm25_search(query1, k=3)
+
+print(&quot;\nQUERY:&quot;, query1)
+print_results(&quot;Dense&quot;, dense_docs)
+print_results(&quot;BM25&quot;, bm25_docs)
+
+
+# BM25가 유리할 수 있는 정확한 용어 중심 질문
+query2 = &quot;One-Source Multi-Use는 어떤 맥락에서 제시되었나요?&quot;
+
+# 두 번째 질문도 같은 방식으로 Dense와 BM25 결과를 비교한다.
+dense_docs = dense_search(query2, k=3)
+bm25_docs = bm25_search(query2, k=3)
+
+print(&quot;\nQUERY:&quot;, query2)
+print_results(&quot;Dense&quot;, dense_docs)
+print_results(&quot;BM25&quot;, bm25_docs)</pre>
+</div>
+</div>
+      
+    </section><section class="slide">
+      <div class="slide-bg"></div>
+      <div class="header-row"><div class="kicker">APPENDIX</div><div class="page">20</div></div>
+      <h1 class="title">코드 모음 ④ · RRF와 최종 실행</h1>
+      <div class="content">
+<div class="two-col gap-md">
+  <div class="code-card tall"><div class="code-head">CELL 12 · RRF</div><pre>def rrf(dense_docs, bm25_docs, k=60):
+    # chunk_id별 RRF 점수를 저장한다.
+    scores = {}
+
+    # chunk_id로 원래 Document를 다시 찾기 위한 저장소
+    documents = {}
+
+    # Dense 결과와 BM25 결과를 차례로 확인한다.
+    for result in [dense_docs, bm25_docs]:
+
+        # rank는 1위부터 시작한다.
+        for rank, doc in enumerate(result, start=1):
+            chunk_id = doc.metadata[&quot;chunk_id&quot;]
+
+            # 처음 등장한 chunk라면 점수를 0으로 초기화하고 Document를 저장한다.
+            if chunk_id not in scores:
+                scores[chunk_id] = 0
+                documents[chunk_id] = doc
+
+            # RRF 공식: 검색기별로 1 / (k + rank)를 더한다.
+            # 두 검색기에서 모두 상위권이면 점수가 커진다.
+            scores[chunk_id] += 1 / (k + rank)
+
+    # RRF 점수가 높은 chunk_id 순서로 정렬한다.
+    ranked_ids = sorted(
+        scores,
+        key=scores.get,
+        reverse=True,
+    )
+
+    # 정렬된 순서대로 Document 목록을 반환한다.
+    return [
+        documents[chunk_id]
+        for chunk_id in ranked_ids
+    ]</pre></div>
+  <div class="code-card tall"><div class="code-head">CELL 14 · FINAL QUERY</div><pre>query = &quot;AI 기본법 시행령과 글로벌 규제 정합성은 어떻게 설명되나요?&quot;
+
+# 1. Dense에서 후보 문서 8개를 검색한다.
+dense_docs = dense_search(query, k=8)
+
+# 2. BM25에서 후보 문서 8개를 검색한다.
+bm25_docs = bm25_search(query, k=8)
+
+# 3. 두 검색 결과의 순위를 RRF로 결합한다.
+hybrid_docs = rrf(
+    dense_docs,
+    bm25_docs,
+    k=60,
+)
+
+# 4. 최종 Top-5만 사용한다.
+hybrid_docs = hybrid_docs[:5]
+
+
+print(&quot;QUERY:&quot;, query)
+
+# Dense, BM25, Hybrid 결과의 순위를 나란히 비교한다.
+print_results(&quot;Dense&quot;, dense_docs[:5])
+print_results(&quot;BM25&quot;, bm25_docs[:5])
+print_results(&quot;Hybrid + RRF&quot;, hybrid_docs)</pre></div>
+</div>
+</div>
+      
+    </section></main></body></html>
+<style>
+.slide:has(.code-card.tall) .content, .slide:has(.code-card.big-full) .content, .slide:has(.wide-code) .content{justify-content:center;}
+</style>

@@ -4070,6 +4070,7 @@ dependencies = [
     { name = "beautifulsoup4" },
     { name = "chromadb" },
     { name = "docling", extra = ["onnxruntime"] },
+    { name = "docling-core" },
     { name = "dotenv" },
     { name = "faiss-gpu" },
     { name = "ipykernel" },
@@ -4087,6 +4088,7 @@ dependencies = [
     { name = "pypdf" },
     { name = "python-dotenv" },
     { name = "rank-bm25" },
+    { name = "tiktoken" },
 ]
 
 [package.metadata]
@@ -4094,6 +4096,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = ">=4.15.0" },
     { name = "chromadb", specifier = ">=1.5.9" },
     { name = "docling", extras = ["onnxruntime"], specifier = ">=2.133.0" },
+    { name = "docling-core", specifier = ">=2.99.0" },
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "faiss-gpu", specifier = ">=1.15.1" },
     { name = "ipykernel", specifier = ">=7.4.0" },
@@ -4111,6 +4114,7 @@ requires-dist = [
     { name = "pypdf", specifier = ">=6.19.0" },
     { name = "python-dotenv", specifier = ">=1.2.3" },
     { name = "rank-bm25", specifier = ">=0.2.2" },
+    { name = "tiktoken", specifier = ">=0.14.0" },
 ]
 
 [[package]]
