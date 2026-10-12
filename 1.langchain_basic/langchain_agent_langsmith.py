@@ -3,7 +3,7 @@ from langchain.agents import create_agent
 import sys
 sys.path.append("..")
 
-from config.common_configimport llm_connect
+from common_config import llm_connect
 
 
 def get_weather(city: str) -> str:
